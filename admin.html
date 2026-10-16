@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Admin · Miss Derrière d'Or</title>
+<style>
+:root{--bg:#f8f6f1;--card:#fff;--tx:#14213d;--mu:#5f6b85;--ac:#1f3a8f;--ac2:#3b5bc4;--go:#dba510;--bd:#e3dfd3;--rd:#b42318;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1530;--card:#162046;--tx:#f4f1e8;--mu:#a9b3d0;--ac:#4f6fe0;--ac2:#3b5bc4;--go:#f5c518;--bd:#26335f;--rd:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.45}
+.w{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header{border-bottom:2px solid var(--go);background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header .w{display:flex;justify-content:space-between;align-items:center;height:52px;padding-bottom:0}
+button,select{font:inherit}button{cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:700}
+.btn.o{background:none;color:var(--tx);border:1px solid var(--bd)}
+.btn.r{background:none;color:var(--rd);border:1px solid var(--rd)}
+.btn:disabled{opacity:.5}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tab{flex:1;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-radius:999px;padding:8px}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
+.row{display:flex;gap:10px;align-items:center}
+.row.top{align-items:flex-start}
+.grow{flex:1;min-width:0}
+.mu{color:var(--mu);font-size:13px;word-break:break-all}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.th{width:56px;height:74px;border-radius:10px;background:var(--bd) center/cover;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--mu)}
+input[type=text],input[type=email],input[type=number]{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;margin-bottom:8px}
+h2{font-size:18px;margin:6px 0 10px}
+.tag{font-size:11px;border-radius:999px;padding:2px 8px;border:1px solid var(--bd);color:var(--mu)}
+.tag.ok{color:#067647;border-color:#067647}.tag.no{color:var(--rd);border-color:var(--rd)}
+.empty{text-align:center;color:var(--mu);padding:20px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;max-width:92%;text-align:center;z-index:9}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><div class="w"><b>👑 Admin · Derrière d'Or</b><button class="btn o" id="out" hidden>Déconnexion</button></div></header>
+<main class="w" id="app"></main>
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+var SB_URL="https://chhkxevjvwscyuyswovd.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoaGt4ZXZqdndzY3l1eXN3b3ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMDI4NTgsImV4cCI6MjEwNzY3ODg1OH0.DT_RR2ywJMRMydffD3zz5D5WRDjMXmJVoYuQMhUq9z0";
+var ADMIN="missderrieredor@gmail.com";
+var NAMES=["Inscriptions","Tour 1","Demi-finale","Finale"];
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var S={user:null,tab:"a",set:{current_round:1,voting_open:true},apps:[],cands:[],counts:{},total:0};
+function $(i){return document.getElementById(i)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function btn(txt,cls,fn){var b=el("button","btn "+cls,txt);b.onclick=fn;return b}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},4500)}
+function fail(r){if(r.error){toast("Erreur : "+r.error.message);return true}return false}
+
+async function load(){
+ var a=await sb.from("settings").select("*").eq("id",1).single();if(a.data)S.set=a.data;
+ var b=await sb.from("applications").select("*").order("created_at");S.apps=b.data||[];
+ var c=await sb.from("candidates").select("*").order("name");S.cands=c.data||[];
+ var d=await sb.from("results").select("candidate_id,round_no,votes");
+ S.counts={};S.total=0;
+ (d.data||[]).forEach(function(r){if(r.round_no===S.set.current_round){S.counts[r.candidate_id]=r.votes;S.total+=r.votes}});
+ render();
+}
+function render(){
+ var app=$("app");app.textContent="";$("out").hidden=!S.user;
+ if(!S.user){
+  var c=el("div","card");c.appendChild(el("h2",null,"Connexion administrateur"));
+  var i=document.createElement("input");i.type="email";i.placeholder="Adresse email du concours";c.appendChild(i);
+  c.appendChild(btn("Recevoir mon lien","",async function(){
+   var m=i.value.trim().toLowerCase();if(m!==ADMIN){toast("Adresse non autorisée");return}
+   var r=await sb.auth.signInWithOtp({email:m,options:{emailRedirectTo:location.origin+location.pathname}});
+   if(fail(r))return;toast("Lien envoyé, vérifie ta boîte mail")}));
+  app.appendChild(c);return}
+ if((S.user.email||"").toLowerCase()!==ADMIN){app.appendChild(el("div","empty","Accès réservé à l'organisatrice du concours."));return}
+ var t=el("div","tabs");
+ [["a","Candidatures ("+S.apps.length+")"],["c","Candidates"],["t","Tours"]].forEach(function(x){
+  var b=el("button","tab"+(S.tab===x[0]?" on":""),x[1]);b.onclick=function(){S.tab=x[0];render()};t.appendChild(b)});
+ app.appendChild(t);
+ if(S.tab==="a")tabA(app);else if(S.tab==="c")tabC(app);else tabT(app);
+}
+function tabA(app){
+ if(!S.apps.length){app.appendChild(el("div","empty","Aucune nouvelle candidature."));return}
+ app.appendChild(el("p","mu","Avant d'approuver : vérifie la pièce d'identité reçue par email (18 ans minimum), puis supprime-la de ta boîte."));
+ S.apps.forEach(function(a){
+  var c=el("div","card");c.appendChild(el("b",null,a.name+(a.city?" · "+a.city:"")));
+  var m=el("div","mu");var l=el("a",null,a.email);l.href="mailto:"+a.email;m.appendChild(l);c.appendChild(m);
+  c.appendChild(el("div","mu","Reçue le "+new Date(a.created_at).toLocaleDateString("fr-FR")));
+  var ac=el("div","acts");
+  ac.appendChild(btn("Approuver","",async function(){
+   var r=await sb.from("candidates").insert({name:a.name,city:a.city,status:"approved",max_round:S.set.current_round}).select();
+   if(fail(r))return;
+   var d=await sb.from("applications").delete().eq("id",a.id);if(fail(d))return;
+   toast("Candidate approuvée, ajoute sa photo dans l'onglet Candidates");load()}));
+  ac.appendChild(btn("Refuser","r",async function(){
+   if(!confirm("Refuser et supprimer cette candidature ?"))return;
+   var d=await sb.from("applications").delete().eq("id",a.id);if(fail(d))return;load()}));
+  c.appendChild(ac);app.appendChild(c)});
+}
+function shrink(f){return new Promise(function(ok,ko){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,1200/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);cv.toBlob(function(b){URL.revokeObjectURL(u);b?ok(b):ko()},"image/jpeg",.85)};im.onerror=ko;im.src=u})}
+async function upPhoto(c,file){
+ try{
+  toast("Envoi de la photo…");var b=await shrink(file),p=c.id+"-"+Date.now()+".jpg";
+  var u=await sb.storage.from("photos").upload(p,b,{contentType:"image/jpeg"});if(fail(u))return;
+  var url=sb.storage.from("photos").getPublicUrl(p).data.publicUrl;
+  var r=await sb.from("candidates").update({photo_url:url}).eq("id",c.id).select();if(fail(r))return;
+  toast("Photo enregistrée");load();
+ }catch(e){toast("Photo illisible, essaie une autre image")}
+}
+function tabC(app){
+ app.appendChild(btn("+ Ajouter une candidate","o",async function(){
+  var n=prompt("Pseudo de la candidate ?");if(!n)return;var v=prompt("Ville ?")||"";
+  var r=await sb.from("candidates").insert({name:n.trim(),city:v.trim(),status:"approved",max_round:S.set.current_round}).select();if(fail(r))return;load()}));
+ app.appendChild(el("p"));
+ if(!S.cands.length)app.appendChild(el("div","empty","Aucune candidate."));
+ S.cands.forEach(function(c){
+  var card=el("div","card"),row=el("div","row top"),th=el("div","th",c.photo_url?"":c.name.charAt(0));
+  if(c.photo_url)th.style.backgroundImage="url('"+encodeURI(c.photo_url)+"')";
+  var g=el("div","grow");g.appendChild(el("b",null,c.name));
+  g.appendChild(el("div","mu",(c.city||"")+" · tour max : "+c.max_round));
+  var tg=el("span","tag "+(c.status==="approved"?"ok":"no"),c.status==="approved"?"visible":"masquée");g.appendChild(tg);
+  g.appendChild(el("span","mu"," "+(S.counts[c.id]||0)+" vote(s) ce tour"));
+  row.appendChild(th);row.appendChild(g);card.appendChild(row);
+  var ac=el("div","acts"),f=document.createElement("input");f.type="file";f.accept="image/*";f.hidden=true;
+  f.onchange=function(){if(f.files[0])upPhoto(c,f.files[0])};
+  ac.appendChild(btn(c.photo_url?"Changer la photo":"Ajouter la photo","o",function(){f.click()}));ac.appendChild(f);
+  ac.appendChild(btn(c.status==="approved"?"Masquer":"Afficher","o",async function(){
+   var r=await sb.from("candidates").update({status:c.status==="approved"?"rejected":"approved"}).eq("id",c.id).select();if(fail(r))return;load()}));
+  ac.appendChild(btn("Renommer","o",async function(){
+   var n=prompt("Nouveau pseudo",c.name);if(!n)return;
+   var r=await sb.from("candidates").update({name:n.trim()}).eq("id",c.id).select();if(fail(r))return;load()}));
+  ac.appendChild(btn("Supprimer","r",async function(){
+   if(!confirm("Supprimer "+c.name+" et ses votes ?"))return;
+   var r=await sb.from("candidates").delete().eq("id",c.id);if(fail(r))return;load()}));
+  card.appendChild(ac);app.appendChild(card)});
+}
+function tabT(app){
+ var r=S.set.current_round,c=el("div","card");
+ c.appendChild(el("h2",null,"Tour en cours : "+NAMES[r]));
+ c.appendChild(el("div","mu",S.total+" vote(s) enregistré(s) à ce tour"));
+ c.appendChild(el("div","mu","Votes : "+(S.set.voting_open?"ouverts":"fermés")));
+ var ac=el("div","acts");
+ ac.appendChild(btn(S.set.voting_open?"Fermer les votes":"Ouvrir les votes","",async function(){
+  var u=await sb.from("settings").update({voting_open:!S.set.voting_open}).eq("id",1).select();if(fail(u))return;
+  if(!u.data.length){toast("Non autorisé : vérifie les règles Supabase");return}load()}));
+ c.appendChild(ac);app.appendChild(c);
+ var n=el("div","card");n.appendChild(el("h2",null,"Passer au tour suivant"));
+ if(r>=3){n.appendChild(el("div","mu","C'est la finale : plus de tour après."))}
+ else{
+  n.appendChild(el("div","mu","Les meilleures candidates du tour actuel passent au suivant, les autres sont retirées de la galerie. Chaque tour repart avec des votes à zéro."));
+  var i=document.createElement("input");i.type="number";i.min="1";i.value=r===1?50:10;n.appendChild(i);
+  n.appendChild(el("div","mu","Nombre de candidates qualifiées"));
+  var a2=el("div","acts");
+  a2.appendChild(btn("Passer à : "+NAMES[r+1],"",async function(){
+   var k=parseInt(i.value,10);if(!k||k<1){toast("Nombre invalide");return}
+   var list=S.cands.filter(function(x){return x.status==="approved"&&x.max_round>=r}).sort(function(a,b){return (S.counts[b.id]||0)-(S.counts[a.id]||0)});
+   var keep=list.slice(0,k);
+   if(!confirm(keep.length+" candidate(s) qualifiée(s) pour "+NAMES[r+1]+" : "+keep.map(function(x){return x.name}).join(", ")+". Confirmer ?"))return;
+   var ids=keep.map(function(x){return x.id});
+   var u=await sb.from("candidates").update({max_round:r+1}).in("id",ids).eq("max_round",r).select();if(fail(u))return;
+   var s=await sb.from("settings").update({current_round:r+1}).eq("id",1).select();if(fail(s))return;
+   toast("Tour suivant lancé");load()}));
+  n.appendChild(a2)}
+ app.appendChild(n);
+ var d=el("div","card");d.appendChild(el("h2",null,"Remettre les votes à zéro"));
+ d.appendChild(el("div","mu","Supprime TOUS les votes de tous les tours (utile pour effacer tes tests avant le lancement)."));
+ var a3=el("div","acts");
+ a3.appendChild(btn("Supprimer tous les votes","r",async function(){
+  if(!confirm("Supprimer TOUS les votes ? Action irréversible."))return;
+  if(prompt("Tape SUPPRIMER pour confirmer")!=="SUPPRIMER")return;
+  var x=await sb.from("votes").delete().neq("id","00000000-0000-0000-0000-000000000000");if(fail(x))return;
+  toast("Votes remis à zéro");load()}));
+ d.appendChild(a3);app.appendChild(d);
+}
+$("out").onclick=function(){sb.auth.signOut()};
+sb.auth.onAuthStateChange(function(e,s){S.user=s?s.user:null;if(S.user)load();else render()});
+sb.auth.getSession().then(function(x){S.user=x.data.session?x.data.session.user:null;if(S.user)load();else render()});
+</script>
+</body>
+</html>
