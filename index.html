@@ -182,15 +182,18 @@ sb.auth.getSession().then(function(x){S.user=x.data.session?x.data.session.user:
   var box=document.getElementById('lightbox');
   var big=box.querySelector('img');
   function close(){box.classList.remove('open');big.src='';}
+  function open(src,alt){big.src=src;big.alt=alt||'';box.classList.add('open');}
   document.addEventListener('click',function(e){
-    var img=e.target.closest('img');
-    if(img && !box.contains(img) && !img.closest('header,nav,footer')){
-      big.src=img.currentSrc||img.src;
-      big.alt=img.alt||'';
-      box.classList.add('open');
-      return;
+    if(box.classList.contains('open')){close();return;}
+    var ph=e.target.closest('.ph');
+    if(ph && ph.style.backgroundImage){
+      var m=ph.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+      if(m){open(m[1],'');return;}
     }
-    if(box.classList.contains('open')&&box.contains(e.target)) close();
+    var img=e.target.closest('img');
+    if(img && !img.closest('header,nav,footer')){
+      open(img.currentSrc||img.src,img.alt);
+    }
   });
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
