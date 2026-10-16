@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miss Derrière d'Or</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,800&display=swap">
+<style>
+:root{--bg:#f8f6f1;--card:#fff;--tx:#14213d;--mu:#5f6b85;--ac:#1f3a8f;--ac2:#3b5bc4;--go:#dba510;--bd:#e3dfd3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1530;--card:#162046;--tx:#f4f1e8;--mu:#a9b3d0;--ac:#4f6fe0;--ac2:#3b5bc4;--go:#f5c518;--bd:#26335f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+.w{max-width:960px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--go)}
+header .w{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-weight:800;font-size:17px}.logo b{color:var(--go);font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:1.35em}
+button{font:inherit;cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0;border-radius:999px;padding:10px 18px;font-weight:700}
+.btn.o{background:none;color:var(--tx);border:1px solid var(--bd)}
+.btn:disabled{opacity:.5;cursor:default}
+.hero{text-align:center;padding:44px 0 28px}
+.hero h1{font-size:clamp(32px,9vw,58px);line-height:1.05;margin:0 0 12px;font-weight:900}
+.hero h1 span{background:linear-gradient(135deg,var(--ac),var(--go));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mu);max-width:520px;margin:0 auto 20px}
+.steps{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
+.step{flex:1 0 140px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;font-size:13px;color:var(--mu)}
+.step b{display:block;color:var(--tx);font-size:14px}
+.step.on{border-color:var(--ac)}.step.on b{color:var(--ac)}
+h2{font-size:22px;margin:28px 0 12px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{background:var(--card);border:1px solid var(--bd);color:var(--tx);border-radius:999px;padding:8px 16px}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.ph{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#fff;background:linear-gradient(160deg,var(--ac),#0d1530) center/cover}
+.ci{padding:10px 12px}.ci b{display:block}.ci small{color:var(--mu)}
+.ci .btn{width:100%;margin-top:8px;padding:8px}
+.rk{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--bd)}
+.row:last-child{border:0}.n{width:28px;font-weight:800;color:var(--ac)}
+.bar{flex:1;height:8px;background:var(--bd);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--go))}
+.mod{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.mod.on{display:flex}
+.box{background:var(--card);border-radius:18px;padding:20px;max-width:380px;width:100%;border:1px solid var(--bd)}
+.box h3{margin:0 0 10px}
+input[type=text],input[type=email]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;margin-bottom:10px}
+label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;align-items:flex-start}
+.note{font-size:12px;color:var(--mu);text-align:center;padding:24px 0 36px}
+.empty{padding:24px;text-align:center;color:var(--mu)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:30;max-width:90%;text-align:center}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><div class="w"><div class="logo">Miss <b>Derrière d'Or</b></div><button class="btn o" id="acc">Se connecter</button></div></header>
+<main class="w">
+<section class="hero">
+<h1>Élis les plus beaux <span>fessiers de France</span> 👑</h1>
+<p>Un concours ouvert à toutes les candidates majeures. Un vote par tour, jusqu'à la grande finale.</p>
+<button class="btn" id="tov">Voter maintenant</button>
+<button class="btn o" id="reg">Je participe</button>
+</section>
+<div class="steps" id="steps"></div>
+<h2 id="cand">Les candidates</h2>
+<div class="tabs"><button class="tab on" data-t="g">Galerie</button><button class="tab" data-t="r">Classement</button></div>
+<div id="g" class="grid"></div>
+<div id="r" class="rk" hidden></div>
+<p class="note">Réservé aux majeurs (18+). Un vote par personne et par tour. Les candidates ont donné leur accord pour la publication de leurs photos.</p>
+</main>
+
+<div class="mod" id="m1"><div class="box">
+<h3>Connexion pour voter</h3>
+<p style="font-size:14px;color:var(--mu);margin-top:0">Entre ton email : on t'envoie un lien de connexion, sans mot de passe.</p>
+<input type="email" id="em" placeholder="Ton adresse email">
+<label class="k"><input type="checkbox" id="ag"> Je confirme avoir 18 ans ou plus</label>
+<button class="btn" id="go" style="width:100%">Recevoir mon lien</button>
+<button class="btn o" style="width:100%;margin-top:8px" data-x>Annuler</button>
+</div></div>
+<div class="mod" id="m2"><div class="box">
+<h3>Inscription candidate</h3>
+<input type="text" id="nm" placeholder="Pseudo">
+<input type="text" id="ct" placeholder="Ville">
+<input type="email" id="ce" placeholder="Email (pour vérifier ta majorité)">
+<label class="k"><input type="checkbox" id="c1"> J'ai 18 ans ou plus et je fournirai une pièce d'identité</label>
+<label class="k"><input type="checkbox" id="c2"> J'accepte la publication de mes photos et je peux les retirer à tout moment</label>
+<button class="btn" id="sd" style="width:100%">Envoyer ma candidature</button>
+<button class="btn o" style="width:100%;margin-top:8px" data-x>Fermer</button>
+</div></div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+var SB_URL="https://chhkxevjvwscyuyswovd.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoaGt4ZXZqdndzY3l1eXN3b3ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMDI4NTgsImV4cCI6MjEwNzY3ODg1OH0.DT_RR2ywJMRMydffD3zz5D5WRDjMXmJVoYuQMhUq9z0";
+var ROUNDS=[["Inscriptions","Ouvertes à toutes"],["Tour 1","Top 50"],["Demi-finale","Top 10"],["Finale","La gagnante"]];
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var S={round:1,open:true,cands:[],counts:{},mine:null,user:null};
+function $(i){return document.getElementById(i)}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},2800)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function openM(id){$(id).classList.add("on")}
+function closeM(){document.querySelectorAll(".mod").forEach(function(m){m.classList.remove("on")})}
+var okMail=function(m){return /^\S+@\S+\.\S+$/.test(m)};
+
+async function load(){
+ try{
+  var st=await sb.from("settings").select("*").eq("id",1).single();
+  if(st.data){S.round=st.data.current_round;S.open=st.data.voting_open}
+  var cs=await sb.from("candidates").select("id,name,city,photo_url").gte("max_round",S.round).order("name");
+  S.cands=cs.data||[];
+  var rs=await sb.from("results").select("candidate_id,votes").eq("round_no",S.round);
+  S.counts={};(rs.data||[]).forEach(function(r){S.counts[r.candidate_id]=r.votes});
+  S.mine=null;
+  if(S.user){var mv=await sb.from("votes").select("candidate_id").eq("round_no",S.round).maybeSingle();S.mine=mv.data?mv.data.candidate_id:null}
+ }catch(e){toast("Connexion impossible, réessaie")}
+ render();
+}
+function render(){
+ var s=$("steps");s.textContent="";
+ ROUNDS.forEach(function(r,i){var d=el("div","step"+(i===S.round?" on":""));d.appendChild(el("b",null,r[0]));d.appendChild(document.createTextNode(r[1]+(i===S.round?" · en cours":"")));s.appendChild(d)});
+ $("acc").textContent=S.user?"Déconnexion":"Se connecter";
+ var g=$("g");g.textContent="";
+ if(!S.cands.length){g.appendChild(el("div","empty","Les candidates arrivent bientôt."))}
+ S.cands.forEach(function(c){
+  var card=el("div","c"),ph=el("div","ph",c.photo_url?"":c.name.charAt(0));
+  if(c.photo_url)ph.style.backgroundImage="url('"+encodeURI(c.photo_url)+"')";
+  var ci=el("div","ci");ci.appendChild(el("b",null,c.name));ci.appendChild(el("small",null,c.city||""));
+  var b=el("button","btn",S.mine===c.id?"Ton vote ✓":(S.open?"Voter":"Vote fermé"));
+  b.disabled=!S.open||S.mine!=null;
+  b.onclick=function(){vote(c.id)};
+  ci.appendChild(b);card.appendChild(ph);card.appendChild(ci);g.appendChild(card)});
+ var r=$("r");r.textContent="";
+ var list=S.cands.slice().sort(function(a,b){return (S.counts[b.id]||0)-(S.counts[a.id]||0)});
+ var mx=Math.max(1,list.length?(S.counts[list[0].id]||0):1);
+ list.forEach(function(c,i){
+  var row=el("div","row");row.appendChild(el("span","n",i+1));
+  var nm=el("b",null,c.name);nm.style.width="80px";row.appendChild(nm);
+  var bar=el("div","bar"),f=document.createElement("i");f.style.width=((S.counts[c.id]||0)/mx*100)+"%";bar.appendChild(f);row.appendChild(bar);
+  row.appendChild(el("span",null,S.counts[c.id]||0));r.appendChild(row)});
+}
+async function vote(id){
+ if(!S.user){openM("m1");return}
+ var r=await sb.from("votes").insert({candidate_id:id,round_no:S.round});
+ if(r.error){toast(r.error.code==="23505"?"Tu as déjà voté à ce tour":"Vote refusé");return}
+ toast("Vote enregistré, merci !");load();
+}
+$("go").onclick=async function(){
+ var m=$("em").value.trim();
+ if(!okMail(m)){toast("Email invalide");return}
+ if(!$("ag").checked){toast("Il faut avoir 18 ans ou plus");return}
+ var r=await sb.auth.signInWithOtp({email:m,options:{data:{adult_confirmed:true},emailRedirectTo:location.origin+location.pathname}});
+ if(r.error){toast("Envoi impossible : "+r.error.message);return}
+ closeM();toast("Lien envoyé ! Vérifie ta boîte mail (et les spams)");
+};
+$("acc").onclick=async function(){if(S.user){await sb.auth.signOut()}else openM("m1")};
+$("reg").onclick=function(){openM("m2")};
+$("tov").onclick=function(){$("cand").scrollIntoView({behavior:"smooth"})};
+$("sd").onclick=async function(){
+ var n=$("nm").value.trim(),e=$("ce").value.trim();
+ if(!n||!okMail(e)){toast("Pseudo et email requis");return}
+ if(!$("c1").checked||!$("c2").checked){toast("Merci de cocher les deux cases");return}
+ var r=await sb.from("applications").insert({name:n,email:e,city:$("ct").value.trim(),adult_confirmed:true,photo_consent:true});
+ if(r.error){toast("Envoi impossible, réessaie");return}
+ closeM();toast("Candidature reçue, merci !");
+};
+document.querySelectorAll("[data-x]").forEach(function(b){b.onclick=closeM});
+document.querySelectorAll(".tab").forEach(function(t){t.onclick=function(){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("on")});t.classList.add("on");$("g").hidden=t.dataset.t!=="g";$("r").hidden=t.dataset.t!=="r"}});
+sb.auth.onAuthStateChange(function(ev,session){S.user=session?session.user:null;load()});
+sb.auth.getSession().then(function(x){S.user=x.data.session?x.data.session.user:null;load()});
+</script>
+</body>
+</html>
