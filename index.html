@@ -163,7 +163,7 @@ async function load(){
 }
 function render(){
  var s=$("steps");s.textContent="";
- ROUNDS.forEach(function(r,i){var d=el("div","step"+(i===S.round?" on":""));d.appendChild(el("b",null,r[0]));d.appendChild(document.createTextNode(r[1]+(i===S.round?" · en cours":"")));s.appendChild(d)});
+ ROUNDS.forEach(function(r,i){var d=el("div","step"+(i===S.round?" on":""));d.appendChild(el("b",null,r[0]));d.appendChild(document.createTextNode(r[1]+(i===S.round?(r[1]?" · en cours":"En cours"):""))));s.appendChild(d)});
  $("acc").textContent=S.user?"Déconnexion":"Se connecter";
  var g=$("g");g.textContent="";
  if(!S.cands.length){g.appendChild(el("div","empty","Les candidates arrivent bientôt."))}
