@@ -140,7 +140,6 @@ function render(){
   var th=el("div","ph th",c.photo_url?"":c.name.charAt(0));
   if(c.photo_url)th.style.backgroundImage="url('"+encodeURI(c.photo_url)+"')";
   row.appendChild(th);
-  var row=el("div","row");row.appendChild(el("span","n",i+1));
   var nm=el("b",null,c.name);nm.style.width="80px";row.appendChild(nm);
   var bar=el("div","bar"),f=document.createElement("i");f.style.width=((S.counts[c.id]||0)/mx*100)+"%";bar.appendChild(f);row.appendChild(bar);
   row.appendChild(el("span",null,S.counts[c.id]||0));r.appendChild(row)});
