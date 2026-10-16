@@ -51,6 +51,7 @@ label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;a
 .empty{padding:24px;text-align:center;color:var(--mu)}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:30;max-width:90%;text-align:center}
 #toast.on{opacity:1}
+ .th{width:44px;height:44px;aspect-ratio:1/1;border-radius:50%;font-size:18px;flex:none;cursor:zoom-in}
 </style>
 </head>
 <body>
@@ -135,6 +136,10 @@ function render(){
  var list=S.cands.slice().sort(function(a,b){return (S.counts[b.id]||0)-(S.counts[a.id]||0)});
  var mx=Math.max(1,list.length?(S.counts[list[0].id]||0):1);
  list.forEach(function(c,i){
+      var row=el("div","row");row.appendChild(el("span","n",i+1));
+  var th=el("div","ph th",c.photo_url?"":c.name.charAt(0));
+  if(c.photo_url)th.style.backgroundImage="url('"+encodeURI(c.photo_url)+"')";
+  row.appendChild(th);
   var row=el("div","row");row.appendChild(el("span","n",i+1));
   var nm=el("b",null,c.name);nm.style.width="80px";row.appendChild(nm);
   var bar=el("div","bar"),f=document.createElement("i");f.style.width=((S.counts[c.id]||0)/mx*100)+"%";bar.appendChild(f);row.appendChild(bar);
