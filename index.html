@@ -139,8 +139,9 @@ label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;a
 <script>
 var SB_URL="https://chhkxevjvwscyuyswovd.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoaGt4ZXZqdndzY3l1eXN3b3ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMDI4NTgsImV4cCI6MjEwNzY3ODg1OH0.DT_RR2ywJMRMydffD3zz5D5WRDjMXmJVoYuQMhUq9z0";
-var ROUNDS=[["Inscriptions","Ouvertes à toutes"],["Tour 1",""],["Demi-finale","Top 10"],["Finale","La gagnante"]];var sb=supabase.createClient(SB_URL,SB_KEY);function $(i){return document.getElementById(i)}
-function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},6000)}
+var ROUNDS=[["Inscriptions","Ouvertes à toutes"],["Tour 1",""],["Demi-finale","Top 10"],["Finale","La gagnante"]];var sb=supabase.createClient(SB_URL,SB_KEY);
+var S={round:1,open:true,cands:[],counts:{},mine:null,user:null};
+function $(i){return document.getElementById(i)}function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},6000)}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function openM(id){$(id).classList.add("on")}
 function closeM(){document.querySelectorAll(".mod").forEach(function(m){m.classList.remove("on")})}
