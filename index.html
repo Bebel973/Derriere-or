@@ -52,6 +52,11 @@ label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;a
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:30;max-width:90%;text-align:center}
 #toast.on{opacity:1}
  .th{width:44px;height:44px;aspect-ratio:1/1;border-radius:50%;font-size:18px;flex:none;cursor:zoom-in}
+ .box.long{max-height:85vh;overflow-y:auto}
+.box.long h4{margin:14px 0 4px;font-size:15px}
+.box.long p,.box.long li{font-size:13px;color:var(--mu);margin:0 0 6px}
+.box.long ul{padding-left:18px;margin:0 0 6px}
+.note a{color:var(--ac)}
 </style>
 </head>
 <body>
@@ -69,6 +74,7 @@ label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;a
 <div id="g" class="grid"></div>
 <div id="r" class="rk" hidden></div>
 <p class="note">Réservé aux majeurs (18+). Un vote par personne et par tour. Les candidates ont donné leur accord pour la publication de leurs photos.</p>
+ <p class="note"><a href="#" id="lg">Mentions légales</a> · <a href="#" id="pv">Politique de confidentialité</a></p>
 </main>
 
 <div class="mod" id="m1"><div class="box">
@@ -88,6 +94,44 @@ label.k{display:flex;gap:8px;font-size:13px;color:var(--mu);margin-bottom:10px;a
 <label class="k"><input type="checkbox" id="c2"> J'accepte la publication de mes photos et je peux les retirer à tout moment</label>
 <button class="btn" id="sd" style="width:100%">Envoyer ma candidature</button>
 <button class="btn o" style="width:100%;margin-top:8px" data-x>Fermer</button>
+</div></div>
+ <div class="mod" id="m3"><div class="box long">
+<h3>Mentions légales</h3>
+<h4>Éditeur du site</h4>
+<p>Miss Derrière d'Or est édité à titre non professionnel par [ABEL LALOUPE], particulier, qui en est aussi le directeur de la publication. Contact : [missderrieredor@gmail.com].</p>
+<h4>Hébergement</h4>
+<p>Le site est hébergé par GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis (GitHub Pages). Les données du concours sont stockées par le service Supabase.</p>
+<h4>Photos et droits</h4>
+<p>Les photos des candidates sont publiées avec leur accord. Chaque candidate peut demander à tout moment leur retrait en écrivant à l'adresse de contact ci-dessus.</p>
+<h4>Accès</h4>
+<p>Le concours est réservé aux personnes majeures (18 ans ou plus), candidates comme votants.</p>
+<button class="btn o" style="width:100%;margin-top:12px" data-x>Fermer</button>
+</div></div>
+
+<div class="mod" id="m4"><div class="box long">
+<h3>Politique de confidentialité</h3>
+<h4>Qui est responsable ?</h4>
+<p>L'éditeur du site, dont les coordonnées figurent dans les mentions légales.</p>
+<h4>Quelles données sont collectées ?</h4>
+<ul>
+<li><b>Votants :</b> adresse email (pour la connexion par lien) et choix de vote par tour.</li>
+<li><b>Candidates :</b> pseudo, ville, adresse email et photos. Une pièce d'identité est envoyée par email pour vérifier la majorité ; elle n'est jamais publiée.</li>
+</ul>
+<h4>Pourquoi ?</h4>
+<p>Pour organiser le concours, garantir un vote par personne et par tour, et vérifier que les participants sont majeurs. La base légale est ton consentement.</p>
+<h4>Combien de temps ?</h4>
+<ul>
+<li>Pièces d'identité : supprimées dès la vérification de la majorité.</li>
+<li>Données des candidates et photos : conservées pendant le concours, puis supprimées sous 12 mois, ou plus tôt sur demande.</li>
+<li>Emails et votes des votants : conservés jusqu'à 12 mois après la fin du concours.</li>
+</ul>
+<h4>Qui reçoit les données ?</h4>
+<p>Uniquement l'éditeur et les services techniques nécessaires : Supabase (base de données et envoi du lien de connexion), GitHub (hébergement) et Google (police de caractères Google Fonts, qui reçoit l'adresse IP du visiteur, ainsi que la messagerie utilisée par le concours). Certains de ces services peuvent se trouver hors de l'Union européenne, notamment aux États-Unis.</p>
+<h4>Cookies et traceurs</h4>
+<p>Le site n'utilise aucun cookie publicitaire ni outil de suivi. Il garde seulement ta session de connexion dans le stockage de ton navigateur.</p>
+<h4>Tes droits</h4>
+<p>Tu peux demander l'accès à tes données, leur correction, leur effacement, t'opposer à leur traitement ou retirer ton consentement à tout moment en écrivant à [missderrieredor@gmail.com]. Tu peux aussi déposer une réclamation auprès de la CNIL (cnil.fr).</p>
+<button class="btn o" style="width:100%;margin-top:12px" data-x>Fermer</button>
 </div></div>
 <div id="toast"></div>
 
@@ -160,6 +204,8 @@ $("go").onclick=async function(){
 };
 $("acc").onclick=async function(){if(S.user){await sb.auth.signOut()}else openM("m1")};
 $("reg").onclick=function(){openM("m2")};
+ $("lg").onclick=function(e){e.preventDefault();openM("m3")};
+$("pv").onclick=function(e){e.preventDefault();openM("m4")};
 $("tov").onclick=function(){$("cand").scrollIntoView({behavior:"smooth"})};
 $("sd").onclick=async function(){
  var n=$("nm").value.trim(),e=$("ce").value.trim();
